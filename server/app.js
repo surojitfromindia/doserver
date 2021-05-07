@@ -108,9 +108,69 @@ let AllSubjectForToday = [
   },
 ];
 
+let Upcoming = [
+  {
+    subName: "Computer",
+
+    topic: [
+      {
+        des: "Study my print programe.",
+        lenDes:
+          "I have taught you how to print a line or a word. And how to print variable that stores a line (string) in it.",
+      },
+      {
+        des: "Open chapter 2. Read the 2nd page.",
+      },
+      {
+        des: "Write a simple print programe to print out 3 lines",
+      },
+
+      {
+        des: "Finish the quiz",
+        lenDes: "Finish the quiz. scroll to bottom to start",
+      },
+    ],
+  },
+  {
+    subName: "Math",
+
+    topic: [
+      {
+        des:
+          "Chapter 3, page 49. you have to solve from problem number 3 to 10, can leave problem number 6",
+      },
+
+      {
+        des: "Finish the quiz",
+        lenDes: "Finish the quiz. scroll to bottom to start",
+      },
+    ],
+  },
+  {
+    subName: "English",
+
+    topic: [
+      {
+        des: "Write a small 10 line pragraph on a day that you were sad.",
+      },
+      {
+        des:
+          "Read story on page 10 of your book. find 10 words that you don't the meaning of",
+      },
+    ],
+  },
+];
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.get("/upcoming", (req, res) => {
+  res.send(Upcoming);
+});
+app.get("/new", (req, res) => {
+  res.send(AllSubjectForToday);
+});
 
 app.get("/", (req, res) => {
   "I am Here!";
