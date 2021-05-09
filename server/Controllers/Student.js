@@ -1,4 +1,4 @@
-const { Student, Group } = require("../Models/ModelExports");
+const {  Group } = require("../Models/ModelExports");
 
 var student = exports;
 
