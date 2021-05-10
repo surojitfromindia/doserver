@@ -1,4 +1,8 @@
-const { copyLessonsFromStudyGroup } = require("../server/Controllers/Student");
+const {
+  copyLessonsFromStudyGroup,
+  getOnlyNewLessonOfGroup,
+  getOnlyOldLessonOfGroup
+} = require("../server/Controllers/Student");
 const mongoose = require("mongoose");
 
 mongoose
@@ -10,9 +14,11 @@ mongoose
     (async () => {
       //write code here
       // await createNewGroup(aGroup);
-      await copyLessonsFromStudyGroup(
-        "Ruskin@double.in",
-        "6095a416389f083af4c04eb4"
+      console.log(
+        await getOnlyOldLessonOfGroup(
+          "Ruskin@double.in",
+          "6095a416389f083af4c04eb4"
+        )
       );
     })();
   })

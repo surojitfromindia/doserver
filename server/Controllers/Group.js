@@ -38,7 +38,27 @@ async function isAllowedToRegister(groupId) {
   }
 }
 
+/**Remove a student from group.
+ * the student will no longer able to recive new lessons
+ * @param {string} realStudentID
+ * @param {string} groupId
+ */
+async function removeOrBan(realStudentID, groupId) {
+  try {
+    let rB = await Group.findOneAndUpdate(
+      { _id: groupId },
+      { $pull: { studentsId: realStudentID } },
+      { useFindAndModify: false }
+    );
+    console.log(rB);
+  } catch (error) {
+    console.log("Something wrong happened while banning");
+    console.log(error);
+  }
+}
+
 module.exports = {
   createNewGroup,
   isAllowedToRegister,
+  removeOrBan,
 };

@@ -1,9 +1,12 @@
-const { SignUpToSystem } = require("../server/Controllers/IntoSystem");
+const {
+  SignUpToSystem,
+  DeleteFromSystem,
+} = require("../server/Controllers/IntoSystem");
 const mongoose = require("mongoose");
 let nStudent = {
-  realStudentID: "Ruskin@double.in",
-  age: 22,
-  password: "tyystewvvewdv",
+  realStudentID: "opin@double.in",
+  age: 21,
+  password: "ccwewrewrwe",
 };
 
 mongoose
@@ -16,6 +19,7 @@ mongoose
       //write code here
       // await createNewGroup(aGroup);
       await SignUpToSystem(nStudent);
+      //await DeleteFromSystem("opin@double.in", "ccwewrewrwe");
     })();
   })
   .catch((err) => {

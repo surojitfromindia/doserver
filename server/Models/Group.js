@@ -10,6 +10,7 @@ const GroupSchema = Schema({
   NewLesson: { type: LessonsSchema, required: false },
   OldLesson: { type: [LessonsSchema], required: false },
   UpcomingLesson: { type: LessonsSchema, required: false },
+  TempLesson: { type: LessonsSchema, required: false }, //a temporary record
 });
 
 const Group = model("group", GroupSchema);

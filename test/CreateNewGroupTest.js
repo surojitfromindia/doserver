@@ -1,4 +1,4 @@
-const { createNewGroup } = require("../server/Controllers/Group");
+const { createNewGroup, removeOrBan } = require("../server/Controllers/Group");
 const {
   ValidateAndRegister,
 } = require("../server/Controllers/registerToCourse");
@@ -19,7 +19,8 @@ mongoose
     (async () => {
       //write code here
       // await createNewGroup(aGroup);
-      await ValidateAndRegister(5, "6095a416389f083af4c04eb4", "77825S");
+      //await createNewGroup(5, "6095a416389f083af4c04eb4", "77825S");
+      await removeOrBan("opin@double.in", "6095a416389f083af4c04eb4");
     })();
   })
   .catch((err) => {

@@ -11,7 +11,7 @@ mongoose
   .then(() => {
     (async () => {
       await ValidateAndRegister(
-        "Ruskin@double.in", //studentRealID
+        "opin@double.in", //studentRealID
         "6095a416389f083af4c04eb4", // study group id
         "77825S" // group secrate code
       );

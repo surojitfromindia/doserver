@@ -46,11 +46,11 @@ async function RegisterANewStudent(realStudentID, groupId) {
           $push: { studentsId: realStudentID },
         }
       );
-      //push the groupId to the student
+      //push the groupId to the student and to the groupLesson array
       let US = await Student.updateOne(
         { realStudentID: realStudentID },
         {
-          $push: { groupsId: groupId },
+          $push: { groupsId: groupId, groupsLessons: { groupId: groupId } },
         }
       );
       console.log(UG, US);

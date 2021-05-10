@@ -22,6 +22,41 @@ async function SignUpToSystem(cred) {
   }
 }
 
+/**
+ * Will Remove Every record from System Database of the following user's.
+ * But won't unregister from already registerd courses.
+ * @param {string} realStudentIDF user's email
+ * @param {string} passwordF user's password
+ */
+async function DeleteFromSystem(realStudentIDF, passwordF) {
+  try {
+    let exsist = await Cred.exists({
+      realStudentID: realStudentIDF,
+      password: passwordF,
+    });
+    if (exsist) {
+      //delete them from  student, cred. follow the order.
+      let { realStudentID } = await Student.findOneAndDelete(
+        {
+          realStudentID: realStudentIDF,
+        },
+        { useFindAndModify: false }
+      );
+      await Cred.findOneAndRemove(
+        { realStudentID: realStudentIDF },
+        { useFindAndModify: false }
+      );
+      console.log(`${realStudentID} has been deleted`);
+    } else {
+      console.log("User Doesn't exist");
+    }
+  } catch (err) {
+    console.log(err);
+    console.log("some error happened when tried to Delete");
+  }
+}
+
 module.exports = {
   SignUpToSystem,
+  DeleteFromSystem,
 };
