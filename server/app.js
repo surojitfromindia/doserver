@@ -165,6 +165,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.post("/login", (req, res) => {
+  res.send("bewywubewbcbycbewbccbwcybcuyew");
+});
+
 app.get("/upcoming", (req, res) => {
   res.send(Upcoming);
 });
@@ -173,7 +177,7 @@ app.get("/new", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  "I am Here!";
+  res.send("I am Here!");
 });
 
 app.get("/sub", (req, res) => {
