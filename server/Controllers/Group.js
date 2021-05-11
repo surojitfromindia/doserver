@@ -57,6 +57,12 @@ async function removeOrBan(realStudentID, groupId) {
   }
 }
 
+/**
+ * Return non hidden info like group name, creation date, upcoming, old, new (upadted) lessons, and other students name, picture
+ * @param {String} groupId
+ */
+async function getNonHiddenInfos(groupId) {}
+
 module.exports = {
   createNewGroup,
   isAllowedToRegister,

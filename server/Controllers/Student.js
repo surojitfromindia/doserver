@@ -1,4 +1,4 @@
-const { Group, Student } = require("../Models/ModelExports");
+const { Group, Student, Cred } = require("../Models/ModelExports");
 var student = exports;
 
 /**
@@ -55,7 +55,10 @@ student.copyLessonsFromStudyGroup = async (realStudentID, groupId) => {
  *@param {string} realStudentID
  *@param {string} groupId
  */
-student.forceRefreshNewLessonFromStudyGroup = async (realStudentID, groupId) => {
+student.forceRefreshNewLessonFromStudyGroup = async (
+  realStudentID,
+  groupId
+) => {
   /*
   first check if the student is registered with the mentioned study group
   then fetch recent entries from the group.
@@ -174,4 +177,32 @@ student.getAllLessonsOfGroup = async (realStudentID, groupId) => {
     )[0];
     return thisGroupLatestLesson[0];
   } catch (err) {}
+};
+
+/**
+ *
+ */
+
+student.getInfo = async (realStudentID) => {
+  try {
+    let sinfo = await Student.findOne(
+      { realStudentID: realStudentID },
+      { groupsId: 1, realStudentID: 1 }
+    );
+    return sinfo;
+  } catch (err) {
+    return { error: "Some error occured when fetch info" };
+  }
+};
+
+student.getNonHiddenInfo = async (realStudentID) => {
+  try {
+    let sinfo = await Cred.findOne(
+      { realStudentID: realStudentID },
+      { age: 1, name: 1, _id: 0 }
+    );
+    return sinfo;
+  } catch (err) {
+    return { error: "Some error occured when fetch info" };
+  }
 };

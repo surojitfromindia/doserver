@@ -21,12 +21,15 @@ async function ValidateAndRegister(realStudentID, groupId, groupSecret) {
       //if not private run the register function
       //message has the secrate key
       if (groupSecret === message) {
-        await RegisterANewStudent(realStudentID, groupId);
+        let RegR = await RegisterANewStudent(realStudentID, groupId);
+        return RegR;
       } else {
         console.log("Your secrate key doesn't match");
+        return { message: "your secrate key doesn't macth" };
       }
     } else {
       console.log("This is a private study group, send request to join");
+      return { message: "This is a private study group, send request to join" };
     }
   }
 }
@@ -54,10 +57,12 @@ async function RegisterANewStudent(realStudentID, groupId) {
         }
       );
       console.log(UG, US);
-      return;
+      return { UG, US };
+    } else {
+      console.log("You are already registered");
+      return { message: "Already registerd" };
     }
     //if exsist show message
-    console.log("You are already registered");
   } catch (err) {
     console.log("error while registration process", err);
   }
@@ -65,4 +70,5 @@ async function RegisterANewStudent(realStudentID, groupId) {
 
 module.exports = {
   ValidateAndRegister,
+  RegisterANewStudent,
 };
