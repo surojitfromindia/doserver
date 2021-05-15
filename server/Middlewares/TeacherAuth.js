@@ -1,7 +1,7 @@
 //check if the realStudetId exist in this current group
 const Group = require("../Models/Group");
 const { decode } = require("jsonwebtoken");
-const AuthInGroup = async (req, res, next) => {
+const AuthInTeacher = async (req, res, next) => {
   /**
    * this req have a :groupId paramerter
    */
@@ -11,11 +11,7 @@ const AuthInGroup = async (req, res, next) => {
   try {
     let isInSameGroup = await Group.exists({
       _id: gId,
-      $or: [
-        { studentsId: realId },
-        { teachersId: realId },
-        { adminid: realId },
-      ],
+      teachersId: realId,
     });
     if (isInSameGroup) {
       next();
@@ -27,4 +23,4 @@ const AuthInGroup = async (req, res, next) => {
   }
 };
 
-module.exports.AuthInGroup = AuthInGroup;
+module.exports.AuthInTeacher = AuthInTeacher;

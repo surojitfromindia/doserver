@@ -12,6 +12,7 @@ const StudentSchema = Schema({
       UpcomingLesson: { type: LessonsSchema, required: false },
     },
   ],
+  createdGroupId: { type: [String], required: false },
 });
 
 const Student = model("student", StudentSchema);

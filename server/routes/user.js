@@ -4,6 +4,7 @@ const { AuthInGroup } = require("../Middlewares/GroupAuth");
 const { decode } = require("jsonwebtoken");
 const { getInfo, getNonHiddenInfo } = require("../Controllers/Student");
 const { ValidateAndRegister } = require("../Controllers/registerToCourse");
+const { LessonRoter } = require("./lesson");
 
 /**
  * Register to a group
@@ -47,12 +48,26 @@ router.get(
   }
 );
 
+
+
 /**
- * Return a specific group info from groupLessonArray
+ * Return user info like study group that he/she is in and created
  *
  */
-router.get("/:groupId", JWTAuthM, async (req, res) => {
-  res.send("K");
+router.get("/self", JWTAuthM, async (req, res) => {
+  let base64URL = req.headers.authorization.split(" ")[1];
+  //get user name from token
+  let realId = decode(base64URL).realStudentID;
+  try {
+    let getInfoRes = await getNonHiddenInfo(realId);
+    if (getInfoRes?.error) {
+      res.status(404).send("Sorry!");
+    } else {
+      res.send(getInfoRes);
+    }
+  } catch (err) {
+    res.status(500);
+  }
 });
 
 /**

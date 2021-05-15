@@ -5,7 +5,7 @@ const authenticateJWT = (req, res, next) => {
     const token = authHeader.split(" ")[1];
     jwt.verify(token, `${process.env.PKEY}`, (err, user) => {
       if (err) {
-        return res.sendStatus(403);
+        return res.status(403).send("You don't have auth token");
       }
       next();
     });

@@ -8,7 +8,6 @@ subject.createASubject = async (question) => {
   try {
     let Q = new Question(question);
     let rQ = await Q.save();
-    console.log(rQ);
   } catch (err) {
     console.log(err);
   }
@@ -28,6 +27,5 @@ subject.createASubject = async (question) => {
         { "NewLesson.allSubjects.subName": subject.subName },
       ],
     });
-    console.log(exist);
   } catch (error) {}
 };

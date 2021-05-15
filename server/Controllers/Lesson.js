@@ -63,3 +63,24 @@ lesson.pushToATempLesson = async (lesson, groupId) => {
     console.log(error);
   }
 };
+
+/**A temporary record that hold yet to be modified data.
+ *  After finalizing the changes will be reflected onto the NewLesson
+ * @param {Lesson} lesson
+ * @param {sting} groupId
+ *  */
+
+lesson.getTempLesson = async (groupId) => {
+  try {
+    let lT = await Group.findOne(
+      { _id: groupId },
+      {
+        TempLesson: 1,
+      }
+    );
+    console.log("New Lessons created");
+    return lT;
+  } catch (error) {
+    console.log(error);
+  }
+};

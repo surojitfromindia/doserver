@@ -4,19 +4,22 @@ const { Group } = require("../Models/ModelExports");
  * @param {Object} Group - a study group.
  * @param {string} Group.group_name - name of the study group.
  * @param {string} Group.admin - admin/creator of the group.
+ * @param {string} Group.adminid - id of admin/creator of the group.
  * @param {boolean} Group.private - is the group private.
  * @param {string} Group.secrateKey - secrate key.
  * @returns {Promise} A promise of new group information
  * */
-async function createNewGroup(groupPreDetails) {
+async function createNewGroup(groupPreDetails, realStudentID) {
+  //join the admin id,
+  groupPreDetails.adminid = realStudentID;
   const NewGroup = new Group(groupPreDetails);
   try {
-    let res = await NewGroup.save();
-    console.log("New  Group is created");
-    return res;
+    let rNC = await NewGroup.save();
+    return rNC;
   } catch (err) {
+    console.log(err);
     console.log("Something wrong happened");
-    return;
+    return { error: "some error while creating new group" };
   }
 }
 
@@ -38,7 +41,8 @@ async function isAllowedToRegister(groupId) {
   }
 }
 
-/**Remove a student from group.
+/**
+ * Remove a student from group.
  * the student will no longer able to recive new lessons
  * @param {string} realStudentID
  * @param {string} groupId
@@ -50,21 +54,36 @@ async function removeOrBan(realStudentID, groupId) {
       { $pull: { studentsId: realStudentID } },
       { useFindAndModify: false }
     );
-    console.log(rB);
+    return rB;
   } catch (error) {
     console.log("Something wrong happened while banning");
     console.log(error);
+    return { error: "Some error while banning" };
   }
 }
 
 /**
- * Return non hidden info like group name, creation date, upcoming, old, new (upadted) lessons, and other students name, picture
+ * Return non-hidden info like group name, creation date,
+ * upcoming, old, new (upadted) lessons, and other students name, picture.
  * @param {String} groupId
+ * @returns {Promise} A promise
  */
-async function getNonHiddenInfos(groupId) {}
+async function getNonHiddenInfo(groupId) {
+  try {
+    let rGNHI = await Group.findOne(
+      { _id: groupId },
+      { TempLesson: 0, adminid: 0, secrateKey: 0 }
+    );
+    return rGNHI;
+  } catch (error) {
+    console.log("Something wrong happened while fetching group info", error);
+    return { error: "some error" };
+  }
+}
 
 module.exports = {
   createNewGroup,
   isAllowedToRegister,
   removeOrBan,
+  getNonHiddenInfo,
 };

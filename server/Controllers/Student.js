@@ -29,7 +29,7 @@ student.copyLessonsFromStudyGroup = async (realStudentID, groupId) => {
         $and: [
           { realStudentID: realStudentID },
           { "groupsLessons.groupId": groupId },
-          { "groupsLessons.NewLesson._id": { $ne: newLessonFromGroup._id } },
+          { "groupsLessons.NewLesson._id": { $ne: newLessonFromGroup?._id } },
         ],
       },
       {
@@ -40,12 +40,14 @@ student.copyLessonsFromStudyGroup = async (realStudentID, groupId) => {
       {
         useFindAndModify: false,
       }
-    ).exec();
-    console.log(rU);
+    );
+    if (rU === null) return { message: "Data already fetched" };
+    else return { rU };
   } else {
     console.log(
       "You are not registerd with this group or the group no longer exists"
     );
+    return { error: "group doen't exist" };
   }
 };
 
@@ -68,12 +70,7 @@ student.forceRefreshNewLessonFromStudyGroup = async (
     $and: [{ _id: groupId }, { studentsId: realStudentID }],
   });
   if (exist) {
-    /*fetch group values
-    first check if new record exist within student
-    for that match newLesson id both (group's as well as student's)*/
-    /*Get NewLesson from group */
     let { NewLesson } = await Group.findOne({ _id: groupId });
-    let newLessonFromGroup = NewLesson;
     /*Update the newlesson  */
     let rU = await Student.findOneAndUpdate(
       {
@@ -91,7 +88,6 @@ student.forceRefreshNewLessonFromStudyGroup = async (
         useFindAndModify: false,
       }
     ).exec();
-    console.log(rU);
   } else {
     console.log(
       "You are not registerd with this group or the group no longer exists"
@@ -115,6 +111,7 @@ student.getOnlyNewLessonOfGroup = async (realStudentID, groupId) => {
     let thisGroupLatestLesson = groupsLessons.filter(
       (grouplesson) => grouplesson.groupId === groupId
     );
+
     return thisGroupLatestLesson[0].NewLesson;
   } catch (err) {}
 };
@@ -175,12 +172,14 @@ student.getAllLessonsOfGroup = async (realStudentID, groupId) => {
     let thisGroupLatestLesson = groupsLessons.filter(
       (grouplesson) => grouplesson.groupId === groupId
     )[0];
-    return thisGroupLatestLesson[0];
+
+    return thisGroupLatestLesson;
   } catch (err) {}
 };
 
 /**
- *
+ *Returns hidden group and study info
+ *@param {String} realStudentID student email.
  */
 
 student.getInfo = async (realStudentID) => {
@@ -195,6 +194,10 @@ student.getInfo = async (realStudentID) => {
   }
 };
 
+/**
+ *Returns non hidden info of a student or user.
+ *@param {String} realStudentID student email.
+ */
 student.getNonHiddenInfo = async (realStudentID) => {
   try {
     let sinfo = await Cred.findOne(
@@ -206,3 +209,32 @@ student.getNonHiddenInfo = async (realStudentID) => {
     return { error: "Some error occured when fetch info" };
   }
 };
+
+/**
+ *Returns Update topic when user mark some topic as done.
+ *@param {String} realStudentID student email.
+ *@param {String} gRid group id.
+ *@param {String} subj subject that you want to update.
+ *@param {String} updatedPrgoress the updated topic (personal copied from study group).
+ */
+student.updatePState = async (realStudentID, gRid, subj, updatedPrgoress) => {
+  try {
+    let l = await Student.findOneAndUpdate(
+      {
+        realStudentID: realStudentID,
+      },
+      {
+        $set: {
+          "groupsLessons.$[gid].NewLesson.allSubjects.$[sub].topic": updatedPrgoress,
+        },
+      },
+      {
+        upsert: true,
+        arrayFilters: [{ "gid.groupId": gRid }, { "sub.subName": subj }],
+        useFindAndModify: false,
+      }
+    );
+    return l;
+  } catch (err) {}
+};
+
