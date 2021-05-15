@@ -37,9 +37,12 @@ async function ValidateAndRegister(realStudentID, groupId, groupSecret) {
 async function RegisterANewStudent(realStudentID, groupId) {
   try {
     //first find if the same realStudentID exsist
+
     let exsist = await Group.exists({
+      _id: groupId,
       studentsId: realStudentID,
     });
+    console.log(exsist);
     //if not exsist
     if (!exsist) {
       //push the realStudentID to the group
@@ -56,7 +59,6 @@ async function RegisterANewStudent(realStudentID, groupId) {
           $push: { groupsId: groupId, groupsLessons: { groupId: groupId } },
         }
       );
-      console.log(UG, US);
       return { UG, US };
     } else {
       console.log("You are already registered");

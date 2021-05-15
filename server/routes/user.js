@@ -12,7 +12,6 @@ const { LessonRoter } = require("./lesson");
  */
 router.post("/register/:groupId", JWTAuthM, async (req, res) => {
   let key = req.query.skey;
-  console.log(key);
   let base64URL = req.headers.authorization.split(" ")[1];
   //get user name from token
   let realId = decode(base64URL).realStudentID;
