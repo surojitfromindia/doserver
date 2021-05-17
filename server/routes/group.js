@@ -7,6 +7,7 @@ const {
   getNonHiddenInfo,
   createNewGroup,
   removeOrBan,
+  getGroupInfoAdmin,
 } = require("../Controllers/Group");
 
 /**
@@ -49,6 +50,18 @@ router.post("/new", JWTAuthM, async (req, res) => {
   } catch (err) {
     res.send({ error: "error in sever" });
   }
+});
+
+router.get("/:groupId/admin", async (req, res) => {
+  let gId = req.params.groupId;
+  let base64URL = req.headers.authorization.split(" ")[1];
+  let realId = decode(base64URL).realStudentID;
+  try {
+    let gninfoRes = await getGroupInfoAdmin(realId, gId);
+    if (gninfoRes?.error) {
+      res.send("Some error occured while fetching group info");
+    } else res.send(gninfoRes);
+  } catch (err) {}
 });
 
 /**
