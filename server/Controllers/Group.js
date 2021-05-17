@@ -1,4 +1,4 @@
-const { Group } = require("../Models/ModelExports");
+const { Group, Student } = require("../Models/ModelExports");
 
 /**Create a new study group
  * @param {Object} Group - a study group.
@@ -14,12 +14,37 @@ async function createNewGroup(groupPreDetails, realStudentID) {
   groupPreDetails.adminid = realStudentID;
   const NewGroup = new Group(groupPreDetails);
   try {
-    let rNC = await NewGroup.save();
-    return rNC;
+    //check if alreay group exist by that name.
+    let alEx = await Student.exists({
+      $and: [
+        { realStudentID: realStudentID },
+        { "createdGroupId.name": groupPreDetails.group_name },
+      ],
+    });
+    if (!alEx) {
+      await NewGroup.save();
+      await Student.updateOne(
+        { realStudentID: realStudentID },
+        { $push: { createdGroupId: { name: groupPreDetails.group_name } } }
+      );
+      return { message: { type: "message", des: "Group Created" } };
+    } else {
+      return {
+        message: {
+          type: "warning",
+          des: "Already have a group with same name ",
+        },
+      };
+    }
   } catch (err) {
     console.log(err);
     console.log("Something wrong happened");
-    return { error: "some error while creating new group" };
+    return {
+      message: {
+        type: "error",
+        des: "Enter Valid Parameters Only!",
+      },
+    };
   }
 }
 
@@ -81,9 +106,23 @@ async function getNonHiddenInfo(groupId) {
   }
 }
 
+async function getGroupInfoAdmin(realStudentID, gname) {
+  try {
+    let rGNHI = await Group.findOne({
+      adminid: realStudentID,
+      group_name: gname,
+    });
+    return rGNHI;
+  } catch (error) {
+    console.log("Something wrong happened while fetching group info", error);
+    return { error: "some error" };
+  }
+}
+
 module.exports = {
   createNewGroup,
   isAllowedToRegister,
   removeOrBan,
   getNonHiddenInfo,
+  getGroupInfoAdmin,
 };

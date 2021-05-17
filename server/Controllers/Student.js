@@ -186,7 +186,7 @@ student.getInfo = async (realStudentID) => {
   try {
     let sinfo = await Student.findOne(
       { realStudentID: realStudentID },
-      { groupsId: 1, realStudentID: 1 }
+      { groupsId: 1, realStudentID: 1, createdGroupId: 1 }
     );
     return sinfo;
   } catch (err) {
@@ -225,7 +225,8 @@ student.updatePState = async (realStudentID, gRid, subj, updatedPrgoress) => {
       },
       {
         $set: {
-          "groupsLessons.$[gid].NewLesson.allSubjects.$[sub].topic": updatedPrgoress,
+          "groupsLessons.$[gid].NewLesson.allSubjects.$[sub].topic":
+            updatedPrgoress,
         },
       },
       {
@@ -234,7 +235,7 @@ student.updatePState = async (realStudentID, gRid, subj, updatedPrgoress) => {
         useFindAndModify: false,
       }
     );
+
     return l;
   } catch (err) {}
 };
-
