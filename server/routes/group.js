@@ -8,6 +8,8 @@ const {
   createNewGroup,
   removeOrBan,
   getGroupInfoAdmin,
+  DeleteGroup,
+  UpdateTeacher,
 } = require("../Controllers/Group");
 
 /**
@@ -52,12 +54,38 @@ router.post("/new", JWTAuthM, async (req, res) => {
   }
 });
 
-router.get("/:groupId/admin", async (req, res) => {
-  let gId = req.params.groupId;
+router.delete("/:gname/delete", async (req, res) => {
+  let gn = req.params.gname;
+  let base64URL = req.headers.authorization.split(" ")[1];
+  let aid = decode(base64URL).realStudentID;
+  try {
+    let dR = await DeleteGroup(gn, aid);
+    console.log(dR);
+    res.send(dR);
+  } catch (err) {
+    console.log(err);
+    res.send("Error");
+  }
+});
+
+//Update teacher.
+router.post("/:gname/update/teacher", async (req, res) => {
+  let gn = req.params.gname;
+  let updateTeacherArray = req.body;
   let base64URL = req.headers.authorization.split(" ")[1];
   let realId = decode(base64URL).realStudentID;
   try {
-    let gninfoRes = await getGroupInfoAdmin(realId, gId);
+    let gninfoRes = await UpdateTeacher(gn, realId, updateTeacherArray);
+    res.send(gninfoRes);
+  } catch (err) {}
+});
+
+router.get("/:gname/admin", async (req, res) => {
+  let gn = req.params.gname;
+  let base64URL = req.headers.authorization.split(" ")[1];
+  let realId = decode(base64URL).realStudentID;
+  try {
+    let gninfoRes = await getGroupInfoAdmin(realId, gn);
     if (gninfoRes?.error) {
       res.send("Some error occured while fetching group info");
     } else res.send(gninfoRes);
