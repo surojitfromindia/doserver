@@ -1,4 +1,5 @@
 const { Group, Student } = require("../Models/ModelExports");
+const { fromatWarning } = require("../utils/warning");
 
 /**Create a new study group
  * @param {Object} Group - a study group.
@@ -118,8 +119,54 @@ async function getGroupInfoAdmin(realStudentID, gname) {
     return { error: "some error" };
   }
 }
+/**
+ * Delete a study group that was created by user/admin.
+ * Only admin of the group can delete that group.
+ * Student registered to that group will recive a notification,
+ * but can access all old lesson, unless admin mark it explicitliy to remove
+ * group id from Student/user document too.
+ * @param {String} gname Name of the group
+ * @param {String} adminid Admin Id/email
+ * @returns {Object} Returns a warning object
+ */
+async function DeleteGroup(gname, adminid) {
+  try {
+    //remove the group
+    await Group.findOneAndRemove(
+      { group_name: gname, adminid: adminid },
+      { useFindAndModify: false }
+    );
+    //remove groupid from createdGroup section of user
+    await Student.findOneAndUpdate(
+      { realStudentID: adminid },
+      { $pull: { createdGroupId: { name: `${gname}` } } },
+      { useFindAndModify: false }
+    );
+
+    return { message: { type: "message", des: "Group Deleted" } };
+  } catch (error) {
+    console.log("Something wrong happened while fetching group info", error);
+    return { message: { type: "error", des: "Error Occured" } };
+  }
+}
+
+async function UpdateTeacher(gname, adminid, updatedTeacherArray) {
+  try {
+    await Group.findOneAndUpdate(
+      { group_name: gname, adminid: adminid },
+      { $set: { teachersId: updatedTeacherArray } },
+      { useFindAndModify: false }
+    );
+    return { message: { type: "message", des: "Teacher list updated" } };
+  } catch (error) {
+    console.log("Something wrong happened while fetching group info", error);
+    return { message: { type: "error", des: "Error Occured" } };
+  }
+}
 
 module.exports = {
+  UpdateTeacher,
+  DeleteGroup,
   createNewGroup,
   isAllowedToRegister,
   removeOrBan,

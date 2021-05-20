@@ -16,7 +16,11 @@ const AuthInAdmin = async (req, res, next) => {
     if (isInSameGroup) {
       next();
     } else {
-      res.status(401).send("Not possible, Your are not admin of this group");
+      res
+        .status(401)
+        .send({
+          message: { type: "error", des: "You are not admin of this group" },
+        });
     }
   } catch (error) {
     res.status(400).send("invalid group id");
