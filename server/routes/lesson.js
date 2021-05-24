@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { decode } = require("jsonwebtoken");
 const { JWTAuthM } = require("../Middlewares/AuthJWT");
 const { AuthInGroup } = require("../Middlewares/GroupAuth");
+const { AuthInTeacher } = require("../Middlewares/TeacherAuth");
 const {
   getOnlyNewLessonOfGroup,
   getOnlyUpcomingLessonOfGroup,
@@ -10,6 +11,7 @@ const {
   forceRefreshNewLessonFromStudyGroup,
   updatePState,
 } = require("../Controllers/Student");
+const { pushToATempLesson, getTempLesson } = require("../Controllers/Lesson");
 
 /**Update Progress */
 router.post("/:groupId/update/:sub", JWTAuthM, async (req, res) => {
@@ -88,6 +90,28 @@ router.get("/:groupId", JWTAuthM, AuthInGroup, async (req, res) => {
     case "old": {
       break;
     }
+  }
+});
+
+/**
+ * Get One lesson on request
+ */
+
+/**
+ * Get temp lessons
+ */
+router.get("/:groupid/temp", AuthInTeacher, (req, res) => {});
+
+/**
+ * Create/update temp lessons
+ */
+router.post("/:groupid/temp", AuthInTeacher, async (req, res) => {
+  let lessonBody = req.body;
+  let gId = req.params.groupId;
+  try {
+    let pR = await pushToATempLesson(lessonBody, gId);
+  } catch (error) {
+    console.log(error);
   }
 });
 module.exports.LessonRoter = router;
