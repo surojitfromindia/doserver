@@ -51,14 +51,21 @@ lesson.forceNewLessonUpdate = async (groupId, secratekey) => {
 
 lesson.pushToATempLesson = async (lesson, groupId) => {
   try {
-    let LessonTemp = new Lesson(lesson);
-    await Group.updateOne(
+    let LessonTemp = new Lesson({
+      allSubjects: lesson,
+    });
+    console.log(LessonTemp);
+    let h = await Group.findOneAndUpdate(
       { _id: groupId },
       {
-        TempLesson: LessonTemp,
+        $set: { TempLesson: LessonTemp },
+      },
+      {
+        useFindAndModify: false,
       }
     );
-    console.log("New Lessons created");
+    console.log(h);
+    return h;
   } catch (error) {
     console.log(error);
   }
@@ -78,7 +85,6 @@ lesson.getTempLesson = async (groupId) => {
         TempLesson: 1,
       }
     );
-    console.log("New Lessons created");
     return lT;
   } catch (error) {
     console.log(error);

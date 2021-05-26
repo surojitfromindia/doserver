@@ -2,7 +2,7 @@
 const { model, Schema } = require("mongoose");
 
 const PTypeSchema = new Schema({
-  typeText: { type: String, enum: ["write", "read", "quiz", "ans", "q"] },
+  typeText: { type: String, enum: ["WRITE", "READ", "QUIZ", "ANS", "Q"] },
 });
 const PType = model("ptype", PTypeSchema);
 
