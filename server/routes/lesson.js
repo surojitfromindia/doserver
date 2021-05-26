@@ -100,16 +100,22 @@ router.get("/:groupId", JWTAuthM, AuthInGroup, async (req, res) => {
 /**
  * Get temp lessons
  */
-router.get("/:groupid/temp", AuthInTeacher, (req, res) => {});
+router.get("/:groupid/temp", async (req, res) => {
+  try {
+    let tlR = await getTempLesson(req.params.groupid);
+    res.send(tlR);
+  } catch (err) {}
+});
 
 /**
  * Create/update temp lessons
  */
-router.post("/:groupid/temp", AuthInTeacher, async (req, res) => {
+router.post("/:groupid/temp", async (req, res) => {
   let lessonBody = req.body;
-  let gId = req.params.groupId;
+  let gId = req.params.groupid;
   try {
     let pR = await pushToATempLesson(lessonBody, gId);
+    res.send(pR);
   } catch (error) {
     console.log(error);
   }
