@@ -11,7 +11,11 @@ const {
   forceRefreshNewLessonFromStudyGroup,
   updatePState,
 } = require("../Controllers/Student");
-const { pushToATempLesson, getTempLesson } = require("../Controllers/Lesson");
+const {
+  pushToATempLesson,
+  getTempLesson,
+  pushATempLessonToNew,
+} = require("../Controllers/Lesson");
 
 /**Update Progress */
 router.post("/:groupId/update/:sub", JWTAuthM, async (req, res) => {
@@ -105,6 +109,19 @@ router.get("/:groupid/temp", async (req, res) => {
     let tlR = await getTempLesson(req.params.groupid);
     res.send(tlR);
   } catch (err) {}
+});
+
+/**
+ * publish a temp lesson on newlesson
+ */
+router.put("/:groupid/publish", async (req, res) => {
+  console.log(req.params.groupid);
+  try {
+    let tlR = await pushATempLessonToNew(req.params.groupid);
+    res.send(tlR);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 /**
