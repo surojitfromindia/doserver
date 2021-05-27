@@ -90,3 +90,27 @@ lesson.getTempLesson = async (groupId) => {
     console.log(error);
   }
 };
+
+lesson.pushATempLessonToNew = async (groupId) => {
+  try {
+    //first get the templesson
+    let { TempLesson } = await Group.findOne(
+      { _id: groupId },
+      { TempLesson: 1 }
+    );
+
+    let h = await Group.findOneAndUpdate(
+      { _id: groupId },
+      {
+        $set: { NewLesson: TempLesson },
+      },
+      {
+        useFindAndModify: false,
+      }
+    );
+    console.log(h);
+    return h;
+  } catch (error) {
+    console.log(error);
+  }
+};
