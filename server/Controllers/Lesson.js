@@ -1,6 +1,7 @@
 //This is a lesson that have all the subjects as an array.
 const { Group, Lesson } = require("../Models/ModelExports");
 const { forceRefreshNewLessonFromStudyGroup } = require("./Student");
+const { fromatWarning } = require("../utils/warning");
 var lesson = exports;
 
 /**
@@ -68,6 +69,34 @@ lesson.pushToATempLesson = async (lesson, groupId) => {
     return h;
   } catch (error) {
     console.log(error);
+  }
+};
+
+lesson.pushCurrentLessonToPreviousLesson = async (groupId) => {
+  try {
+    //get recent lesson from group.
+    let liveLesson = await Group.findOne(
+      { _id: groupId },
+      { NewLesson: 1, _id: 0 }
+    );
+    //create an old Lesson Object
+    let recentOldLesson = new Lesson({
+      lesson_status: "old",
+      allSubjects: liveLesson.NewLesson.allSubjects,
+    });
+    //push the oldLesson object to old lesson array.
+    await Group.updateOne(
+      { _id: groupId },
+      {
+        $push: { OldLesson: recentOldLesson },
+      }
+    );
+    return fromatWarning(
+      "message",
+      "Current lesson moved to old lesson archive"
+    );
+  } catch (error) {
+    return error;
   }
 };
 

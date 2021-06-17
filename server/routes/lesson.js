@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { decode } = require("jsonwebtoken");
 const { JWTAuthM } = require("../Middlewares/AuthJWT");
 const { AuthInGroup } = require("../Middlewares/GroupAuth");
-const { AuthInTeacher } = require("../Middlewares/TeacherAuth");
+//const { AuthInTeacher } = require("../Middlewares/TeacherAuth");
 const {
   getOnlyNewLessonOfGroup,
   getOnlyUpcomingLessonOfGroup,
@@ -15,6 +15,7 @@ const {
   pushToATempLesson,
   getTempLesson,
   pushATempLessonToNew,
+  pushCurrentLessonToPreviousLesson,
 } = require("../Controllers/Lesson");
 
 /**Update Progress */
@@ -60,6 +61,16 @@ router.get("/:groupId/forcepull", JWTAuthM, AuthInGroup, async (req, res) => {
   } else res.send(nRP);
 });
 
+/**
+ * Move current/live lesson to old lessons array. making space for new lesson to publish
+ */
+router.post("/:groupId/move", async (req, res) => {
+  try {
+    let gId = req.params.groupId;
+    let moveResponse = await pushCurrentLessonToPreviousLesson(gId);
+    res.send(moveResponse);
+  } catch (err) {}
+});
 /**
  * Get lessons from student.
  * Have multiple query parameters
@@ -137,4 +148,5 @@ router.post("/:groupid/temp", async (req, res) => {
     console.log(error);
   }
 });
+
 module.exports.LessonRoter = router;

@@ -15,7 +15,7 @@ const TopicSchema = new Schema({
 const Topic = model("topic", TopicSchema);
 
 const QuestionSchema = new Schema({
-  type: { type: PTypeSchema, required: true },
+  type: { type: PTypeSchema, required: true, default: { typeText: "Q" } },
   qtext: { type: String, required: true },
   reference: { type: String, required: false },
   ans: { type: String, required: false },
