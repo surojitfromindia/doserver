@@ -13,7 +13,8 @@ app.use(express.urlencoded({ extended: true }));
 
 mongoose
   .connect(
-    "mongodb+srv://user_surojit:passsurojit@cluster0.3yu8q.mongodb.net/DoneDbDevelopment",
+    // "mongodb+srv://user_surojit:passsurojit@cluster0.3yu8q.mongodb.net/DoneDbDevelopment", //old
+    "mongodb+srv://user_shop:1l5B98yYNc2FQaWp@cluster0.3yu8q.mongodb.net/DoneDbDevelopment",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
